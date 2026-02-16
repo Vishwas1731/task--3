@@ -1,0 +1,59 @@
+#SELECT, WHERE, ORDER BY, GROUP BY
+SELECT region, SUM(price * quantity) AS total_sales
+FROM orders_data
+WHERE price > 2000
+GROUP BY region
+ORDER BY total_sales DESC;
+
+#JOINS (INNER, LEFT, RIGHT)
+CREATE TABLE customers AS
+SELECT DISTINCT customer_id, customer_name, region
+FROM orders_data;
+
+SELECT o.order_id, o.product, c.customer_name, c.region
+FROM orders_data o
+INNER JOIN customers c
+ON o.customer_id = c.customer_id;
+
+SELECT o.order_id, o.product, c.customer_name
+FROM orders_data o
+LEFT JOIN customers c
+ON o.customer_id = c.customer_id;
+
+SELECT o.order_id, o.product, c.customer_name
+FROM orders_data o
+RIGHT JOIN customers c
+ON o.customer_id = c.customer_id;
+
+#Subquery
+SELECT customer_name, price
+FROM orders_data
+WHERE price > (SELECT AVG(price) FROM orders_data);
+
+#Aggregate Functions (SUM, AVG)
+SELECT region, SUM(price * quantity) AS total_sales
+FROM orders_data
+GROUP BY region;
+
+SELECT category, AVG(price) AS avg_price
+FROM orders_data
+GROUP BY category;
+
+#Create View for Analysis
+CREATE VIEW category_sales_summary AS
+SELECT category,
+       SUM(price * quantity) AS total_sales,
+       AVG(quantity) AS avg_quantity
+FROM orders_data
+GROUP BY category;
+
+SELECT * FROM category_sales_summary;
+
+#Optimize Queries with Indexes
+CREATE INDEX idx_customer_id ON orders_data(customer_id);
+CREATE INDEX idx_region ON orders_data(region);
+CREATE INDEX idx_product ON orders_data(product);
+
+
+
+
